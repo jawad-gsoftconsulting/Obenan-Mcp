@@ -1,12 +1,15 @@
 # src/hello_mcp/server_http.py
-from fastapi import FastAPI
-from mcp.server.fastmcp import FastMCP
 
-mcp = FastMCP(name="hello_world", stateless_http=True, json_response=True)
+from fastmcp import FastMCP
 
-@mcp.tool(name="hello_world", description="Returns greeting")
+# 1) Instantiate your FastMCP server
+mcp = FastMCP(name="hello_world")
+
+# 2) Register the hello_world tool
+@mcp.tool(name="hello_world", description="Returns a greeting")
 def hello_world() -> str:
     return "Hello World Tool is called"
 
-app = FastAPI()
-app.add_api_route("/sse", mcp.sse_app(), methods=["GET"])
+# 3) Run with SSE transport (default path: /sse, message path: /messages/)
+if __name__ == "__main__":
+    mcp.run(transport="sse", host="0.0.0.0", port=3000)
